@@ -15,7 +15,7 @@ public class TVChannel {
     public TVChannel(String name, File file) {
 	this.name = name;
 	this.source = file;
-	
+
 	broadcasts = new ArrayList<TVBroadcast>();
     }
 

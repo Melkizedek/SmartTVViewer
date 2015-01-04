@@ -6,43 +6,45 @@ import database.DataBase;
 
 public class UserManagement {
     public static User user;
-    
-    public static boolean login(String name, char[] password){
+
+    public static boolean login(String name, char[] password) {
 	DataBase db = DataBase.getInstance();
 	User login = db.login(name, String.valueOf(password));
-	
-	if(login != null){
+
+	if(login != null) {
 	    user = login;
-	    
-	    if(user instanceof Parent){
-		ArrayList<Child> children = db.getChildrenOfParent((Parent)user);
-		for(int i = 0; i < children.size(); i++){
+
+	    if(user instanceof Parent) {
+		ArrayList<Child> children = db
+			.getChildrenOfParent((Parent) user);
+		for(int i = 0; i < children.size(); i++) {
 		    ((Parent) user).addChild(children.get(i));
 		}
 	    }
-	    
 	    return true;
-	}	
+	}
 	return false;
     }
-    
-    public static boolean createNewUser(String name, char[] password, boolean child, Parent parent){
+
+    public static boolean createNewUser(String name, char[] password,
+	    boolean child, Parent parent) {
 	User user;
-	
-	if(child){
+
+	if(child) {
 	    user = new Child(name, String.valueOf(password), parent);
-	    DataBase.getInstance().addChild((Child)user);
-	}else{
+	    DataBase.getInstance().addChild((Child) user);
+	}
+	else {
 	    user = new Parent(name, String.valueOf(password));
-	    DataBase.getInstance().addParent((Parent)user);
-	}	
+	    DataBase.getInstance().addParent((Parent) user);
+	}
 	return true;
     }
-    
-    public static boolean isChild(){
-	if(user instanceof Child){
+
+    public static boolean isChild() {
+	if(user instanceof Child) {
 	    return true;
-	}	
+	}
 	return false;
     }
 }

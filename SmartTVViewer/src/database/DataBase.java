@@ -41,7 +41,7 @@ public class DataBase {
 
     private static final String SQL_VIEWER_PARENTS_SELECT = "SELECT vname, password, parent FROM Viewer "
 	    + "WHERE parent IS NULL";
-    
+
     private static final String SQL_VIEWER_PARENTS_OF_CHILD_SELECT = "SELECT vname, password, parent FROM Viewer "
 	    + "WHERE parent = ?";
 
@@ -196,7 +196,7 @@ public class DataBase {
 
 	return parents;
     }
-    
+
     public ArrayList<Child> getChildrenOfParent(Parent parent) {
 	ArrayList<Child> children = new ArrayList<Child>();
 

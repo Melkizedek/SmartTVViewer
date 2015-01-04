@@ -16,7 +16,7 @@ import javax.swing.JPasswordField;
 
 import user.UserManagement;
 
-public class LoginView  extends JPanel{
+public class LoginView extends JPanel {
 
     private JFrame frmLogin;
     private JTextField tfName;
@@ -72,20 +72,26 @@ public class LoginView  extends JPanel{
 	JButton btnLogin = new JButton("Login");
 	btnLogin.setBounds(10, 64, 89, 23);
 	frmLogin.getContentPane().add(btnLogin);
-	
+
 	btnLogin.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent actionEvent) {
-		if(tfName.getText().isEmpty() || tfPassword.getPassword().length == 0){
-		    JOptionPane.showMessageDialog(frmLogin, "Please enter a name and password!");
+		if(tfName.getText().isEmpty()
+			|| tfPassword.getPassword().length == 0) {
+		    JOptionPane.showMessageDialog(frmLogin,
+			    "Please enter a name and password!");
 		    tfName.grabFocus();
-		}else{
-		    boolean successful = UserManagement.login(tfName.getText(), tfPassword.getPassword());
-		    
-		    if(successful){
+		}
+		else {
+		    boolean successful = UserManagement.login(tfName.getText(),
+			    tfPassword.getPassword());
+
+		    if(successful) {
 			frmLogin.dispose();
 			SmartTVViewerView.main(null);
-		    }else{
-			JOptionPane.showMessageDialog(frmLogin, "Wrong username or password!");
+		    }
+		    else {
+			JOptionPane.showMessageDialog(frmLogin,
+				"Wrong username or password!");
 			tfName.setText("");
 			tfPassword.setText("");
 			tfName.grabFocus();
@@ -97,7 +103,7 @@ public class LoginView  extends JPanel{
 	JButton btnCreateAccount = new JButton("Create New Account");
 	btnCreateAccount.setBounds(109, 64, 156, 23);
 	frmLogin.getContentPane().add(btnCreateAccount);
-	
+
 	tfPassword = new JPasswordField();
 	tfPassword.setBounds(76, 36, 189, 20);
 	frmLogin.getContentPane().add(tfPassword);

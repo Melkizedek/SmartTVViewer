@@ -1,11 +1,11 @@
 package user;
 
-public class Child extends User{
+public class Child extends User {
     private Parent parent;
-    
-    //restrictions...
-    
-    public Child(String name, String password, Parent parent){
+
+    // restrictions...
+
+    public Child(String name, String password, Parent parent) {
 	super(name, password);
 	this.parent = parent;
     }

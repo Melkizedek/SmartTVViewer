@@ -7,4 +7,5 @@ public class Main {
 	Initializer.initialize();
 	LoginView.main(args);
     }
+
 }

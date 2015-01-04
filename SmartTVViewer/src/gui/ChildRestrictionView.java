@@ -57,6 +57,7 @@ public class ChildRestrictionView {
     /**
      * Initialize the contents of the frame.
      */
+    @SuppressWarnings("serial")
     private void initialize() {
 	DefaultListModel<TVChannel> listModel = new DefaultListModel<TVChannel>();
 

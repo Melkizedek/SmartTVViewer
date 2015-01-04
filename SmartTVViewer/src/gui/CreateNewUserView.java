@@ -84,7 +84,7 @@ public class CreateNewUserView {
 
 	ArrayList<Parent> parentList = DataBase.getInstance().getParents();
 	Parent[] parents = new Parent[parentList.size()];
-	for(int i = 0; i < parentList.size(); i++){
+	for(int i = 0; i < parentList.size(); i++) {
 	    parents[i] = parentList.get(i);
 	}
 

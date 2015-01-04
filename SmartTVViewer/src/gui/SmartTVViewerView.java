@@ -118,11 +118,11 @@ public class SmartTVViewerView {
 
 		if(childrenList.size() > 0) {
 		    Child[] children = new Child[childrenList.size()];
-		    
-		    for(int i = 0; i < childrenList.size(); i++){
+
+		    for(int i = 0; i < childrenList.size(); i++) {
 			children[i] = childrenList.get(i);
 		    }
-		    
+
 		    Child child = (Child) JOptionPane.showInputDialog(frmSTVV,
 			    "Choose Child to organize:", "Choose Child",
 			    JOptionPane.PLAIN_MESSAGE, null, children,
@@ -132,8 +132,10 @@ public class SmartTVViewerView {
 			ChildManagement.selectedChild = child;
 			ChildRestrictionView.main(null);
 		    }
-		}else{
-		    JOptionPane.showMessageDialog(frmSTVV, "This Parent has no children attached");
+		}
+		else {
+		    JOptionPane.showMessageDialog(frmSTVV,
+			    "This Parent has no children attached");
 		}
 	    }
 	});
