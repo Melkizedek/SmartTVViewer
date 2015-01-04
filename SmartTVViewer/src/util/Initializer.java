@@ -22,13 +22,14 @@ public class Initializer {
 
     private void initializeTVChannels() {
 	tvChannelList = new ArrayList<TVChannel>();
+	
 
 	TVChannel c1 = new TVChannel("channel 1", new File(
-		"video/Meshuggah Face of Wall Street.mp4"));
+		"video/video01.mp4"));
 	TVChannel c2 = new TVChannel("channel 2", new File(
-		"video/Meshuggah Face of Wall Street.mp4"));
+		"video/video02.mp4"));
 	TVChannel c3 = new TVChannel("channel 3", new File(
-		"video/Meshuggah Face of Wall Street.mp4"));
+		"video/video03.mp4"));
 
 	Calendar cal = Calendar.getInstance();
 	Calendar cal2 = Calendar.getInstance();

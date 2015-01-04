@@ -8,6 +8,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
@@ -16,14 +17,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import com.sun.jna.NativeLibrary;
+
 import tv.TVChannel;
+import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import user.Child;
 import user.ChildManagement;
 import user.Parent;
@@ -61,6 +71,7 @@ public class SmartTVViewerView {
      * Initialize the contents of the frame.
      */
     private void initialize() {
+	PlayerPanel player = new PlayerPanel();
 	DefaultListModel<TVChannel> listModel = new DefaultListModel<TVChannel>();
 
 	for(int i = 0; i < Initializer.tvChannelList.size(); i++) {
@@ -94,19 +105,18 @@ public class SmartTVViewerView {
 	JList<TVChannel> listChannels = new JList<TVChannel>(listModel);
 	listChannels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	scrollPane.setViewportView(listChannels);
+	
+	frmSTVV.getContentPane().add(player, BorderLayout.CENTER);
+	player.setVisible(true);
+	frmSTVV.setVisible(true);
 
 	listChannels.addMouseListener(new MouseAdapter() {
 	    public void mouseClicked(MouseEvent evt) {
 		JList list = (JList) evt.getSource();
 		if(evt.getClickCount() == 2) {
 		    int index = list.locationToIndex(evt.getPoint());
-		    try {
-			Desktop.getDesktop().open(
-				listModel.elementAt(index).getFile());
-		    } catch(IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		    }
+		    File path = listModel.elementAt(index).getFile();
+		    player.play(path.getAbsolutePath());
 		}
 	    }
 	});
@@ -147,4 +157,25 @@ public class SmartTVViewerView {
 	});
     }
 
+}
+
+class PlayerPanel extends JPanel {
+
+    private File vlcInstallPath = new File("C:/Program Files/VideoLAN/VLC");
+    private EmbeddedMediaPlayer player;
+
+    public PlayerPanel() {
+        NativeLibrary.addSearchPath("libvlc", vlcInstallPath.getAbsolutePath());
+        EmbeddedMediaPlayerComponent videoCanvas = new EmbeddedMediaPlayerComponent();
+        this.setLayout(new BorderLayout());
+        this.add(videoCanvas, BorderLayout.CENTER);
+        this.player = videoCanvas.getMediaPlayer();
+        this.player.setRepeat(true);
+    }
+
+    public void play(String media) {
+        player.prepareMedia(media);
+        player.parseMedia();
+        player.play();
+    }
 }
