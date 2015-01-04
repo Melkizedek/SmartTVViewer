@@ -17,12 +17,19 @@ import javax.swing.JSeparator;
 import tv.TVChannel;
 import util.Initializer;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+
 public class ChildRestrictionView {
 
     private JFrame frmChildRestrictions;
     private JTextField tfFromTime;
     private JTextField tfToTime;
-    private JTextField textField;
+    private JTextField tfMaximumTime;
 
     /**
      * Launch the application.
@@ -63,62 +70,68 @@ public class ChildRestrictionView {
 	frmChildRestrictions.setTitle("Child Restrictions");
 	frmChildRestrictions.setBounds(100, 100, 342, 371);
 	frmChildRestrictions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	frmChildRestrictions.getContentPane().setLayout(null);
+	frmChildRestrictions.getContentPane().setLayout(new BorderLayout(0, 0));
 
-	JLabel lblTimeWindow = new JLabel("Time:");
-	lblTimeWindow.setBounds(5, 8, 67, 14);
-	frmChildRestrictions.getContentPane().add(lblTimeWindow);
+	JPanel panel = new JPanel();
+	frmChildRestrictions.getContentPane().add(panel, BorderLayout.NORTH);
+	panel.setLayout(new BorderLayout(0, 0));
+
+	JPanel panel_1 = new JPanel();
+	FlowLayout flowLayout_1 = (FlowLayout) panel_1.getLayout();
+	flowLayout_1.setAlignment(FlowLayout.LEFT);
+	panel.add(panel_1, BorderLayout.NORTH);
+
+	JLabel lblTimeWindow = new JLabel("Time (hh:mm):");
+	panel_1.add(lblTimeWindow);
 
 	JLabel lblFromTime = new JLabel("From: ");
-	lblFromTime.setBounds(77, 8, 35, 14);
-	frmChildRestrictions.getContentPane().add(lblFromTime);
+	panel_1.add(lblFromTime);
 
 	tfFromTime = new JTextField();
-	tfFromTime.setBounds(110, 5, 86, 20);
-	frmChildRestrictions.getContentPane().add(tfFromTime);
+	panel_1.add(tfFromTime);
 	tfFromTime.setColumns(10);
 
 	JLabel lblToTime = new JLabel("To:");
-	lblToTime.setBounds(201, 8, 28, 14);
-	frmChildRestrictions.getContentPane().add(lblToTime);
+	panel_1.add(lblToTime);
 
 	tfToTime = new JTextField();
-	tfToTime.setBounds(227, 5, 86, 20);
-	frmChildRestrictions.getContentPane().add(tfToTime);
+	panel_1.add(tfToTime);
 	tfToTime.setColumns(10);
 
-	JLabel lblMaximumTime = new JLabel("Maximum Time:");
-	lblMaximumTime.setBounds(5, 33, 107, 14);
-	frmChildRestrictions.getContentPane().add(lblMaximumTime);
+	JPanel panel_2 = new JPanel();
+	FlowLayout flowLayout = (FlowLayout) panel_2.getLayout();
+	flowLayout.setAlignment(FlowLayout.LEFT);
+	panel.add(panel_2, BorderLayout.SOUTH);
 
-	textField = new JTextField();
-	textField.setBounds(110, 33, 86, 20);
-	frmChildRestrictions.getContentPane().add(textField);
-	textField.setColumns(10);
+	JLabel lblMaximumTime = new JLabel("Maximum Time:");
+	panel_2.add(lblMaximumTime);
+
+	tfMaximumTime = new JTextField();
+	panel_2.add(tfMaximumTime);
+	tfMaximumTime.setColumns(10);
+
+	JPanel panel_3 = new JPanel();
+	panel_3.setPreferredSize(new Dimension(100, 100));
+	frmChildRestrictions.getContentPane().add(panel_3, BorderLayout.WEST);
+	panel_3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 	JLabel lblBannedChannels = new JLabel("Banned Channels:");
-	lblBannedChannels.setBounds(5, 58, 122, 20);
-	frmChildRestrictions.getContentPane().add(lblBannedChannels);
-
-	JSeparator separator = new JSeparator();
-	separator.setBounds(0, 58, 326, 2);
-	frmChildRestrictions.getContentPane().add(separator);
+	panel_3.add(lblBannedChannels);
 
 	JList<TVChannel> list = new JList<TVChannel>(listModel);
-	list.setBounds(5, 77, 94, 245);
+	list.setPreferredSize(new Dimension(100, 100));
+	panel_3.add(list);
 	list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	list.setSelectionModel(new DefaultListSelectionModel() {
 	    @Override
 	    public void setSelectionInterval(int index0, int index1) {
-	        if(super.isSelectedIndex(index0)) {
-	            super.removeSelectionInterval(index0, index1);
-	        }
-	        else {
-	            super.addSelectionInterval(index0, index1);
-	        }
+		if(super.isSelectedIndex(index0)) {
+		    super.removeSelectionInterval(index0, index1);
+		}
+		else {
+		    super.addSelectionInterval(index0, index1);
+		}
 	    }
 	});
-	
-	frmChildRestrictions.getContentPane().add(list);
     }
 }

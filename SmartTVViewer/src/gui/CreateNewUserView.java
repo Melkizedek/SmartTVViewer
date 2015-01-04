@@ -20,6 +20,7 @@ import java.awt.Window.Type;
 
 import javax.swing.JPasswordField;
 
+import user.Parent;
 import user.UserManagement;
 
 public class CreateNewUserView {
@@ -79,36 +80,54 @@ public class CreateNewUserView {
 	chckbxChildUser.setBounds(10, 66, 103, 23);
 	frmCreateNewUser.getContentPane().add(chckbxChildUser);
 
-	JComboBox<String> cbParents = new JComboBox<String>();
+	Parent[] parents = {};
+
+	JComboBox<Parent> cbParents = new JComboBox<Parent>(parents);
 	cbParents.setBounds(76, 96, 183, 20);
+	if(parents.length > 0) {
+	    cbParents.setSelectedIndex(0);
+	}
 	frmCreateNewUser.getContentPane().add(cbParents);
 	cbParents.setVisible(false);
 
 	JLabel lblParent = new JLabel("Parent: ");
 	lblParent.setBounds(10, 99, 46, 14);
 	frmCreateNewUser.getContentPane().add(lblParent);
-	
+	lblParent.setVisible(false);
+
 	JButton btnCreateUser = new JButton("Create User");
 	btnCreateUser.setBounds(119, 66, 140, 23);
 	frmCreateNewUser.getContentPane().add(btnCreateUser);
-	
+
 	tfPassword = new JPasswordField();
 	tfPassword.setBounds(76, 36, 183, 20);
 	frmCreateNewUser.getContentPane().add(tfPassword);
-	lblParent.setVisible(false);
-	
+
 	btnCreateUser.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent actionEvent) {
-		if(tfName.getText().isEmpty() || tfPassword.getPassword().length > 0){
-		    JOptionPane.showMessageDialog(frmCreateNewUser, "Please enter a name and password!");
+		if(tfName.getText().isEmpty()
+			|| tfPassword.getPassword().length == 0) {
+		    JOptionPane.showMessageDialog(frmCreateNewUser,
+			    "Please enter a name and password!");
 		    tfName.grabFocus();
-		}else{
-		    boolean successful = UserManagement.createNewUser(tfName.getText(), tfPassword.getPassword(), chckbxChildUser.isSelected(), "");
-		    
-		    if(successful){
+		}
+		else if(chckbxChildUser.isSelected() && parents.length == 0) {
+		    JOptionPane.showMessageDialog(frmCreateNewUser,
+			    "There are no Parents to assign!");
+		    chckbxChildUser.setSelected(false);
+		}
+		else {
+		    boolean successful = UserManagement.createNewUser(
+			    tfName.getText(), tfPassword.getPassword(),
+			    chckbxChildUser.isSelected(),
+			    (Parent) cbParents.getSelectedItem());
+
+		    if(successful) {
 			frmCreateNewUser.dispose();
-		    }else{
-			JOptionPane.showMessageDialog(frmCreateNewUser, "Username already in use!");
+		    }
+		    else {
+			JOptionPane.showMessageDialog(frmCreateNewUser,
+				"Username already in use!");
 			tfName.setText("");
 			tfPassword.setText("");
 			tfName.grabFocus();
