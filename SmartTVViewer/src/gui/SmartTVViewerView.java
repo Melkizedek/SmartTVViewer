@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
@@ -8,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 
 import code.UserManagement;
 
@@ -16,10 +18,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+
+import tv.TVChannel;
+import util.Initializer;
 
 public class SmartTVViewerView {
 
@@ -52,31 +58,11 @@ public class SmartTVViewerView {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-	DefaultListModel<String> listModel = new DefaultListModel<String>();
-	listModel.addElement("Jane Doe");
-	listModel.addElement("John Smith222222222222222222222222222222222222");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
-	listModel.addElement("Kathy Green");
+	DefaultListModel<TVChannel> listModel = new DefaultListModel<TVChannel>();
 	
+	for(int i = 0; i < Initializer.tvChannelList.size(); i++){
+	    listModel.addElement(Initializer.tvChannelList.get(i));
+	}
 
 	frmSTVV = new JFrame();
 	frmSTVV.setTitle("SmartTVViewer");
@@ -95,11 +81,15 @@ public class SmartTVViewerView {
 	    mntmOrganizeChild.setEnabled(false);
 	}
 	
+	JMenuItem mntmViewTvseries = new JMenuItem("View TVSeries");
+	mnMenu.add(mntmViewTvseries);
+	
 	JScrollPane scrollPane = new JScrollPane();
 	scrollPane.setPreferredSize(new Dimension(100, 100));
 	frmSTVV.getContentPane().add(scrollPane, BorderLayout.EAST);
 	
-	JList listChannels = new JList(listModel);
+	JList<TVChannel> listChannels = new JList<TVChannel>(listModel);
+	listChannels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	scrollPane.setViewportView(listChannels);
 	
 	listChannels.addMouseListener(new MouseAdapter() {
@@ -107,7 +97,12 @@ public class SmartTVViewerView {
 	        JList list = (JList)evt.getSource();
 	        if (evt.getClickCount() == 2) {
 	            int index = list.locationToIndex(evt.getPoint());
-	            
+	            try {
+			Desktop.getDesktop().open(listModel.elementAt(index).getFile());
+		    } catch(IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		    }
 	        } 
 	    }
 	});
@@ -122,6 +117,12 @@ public class SmartTVViewerView {
 		if(s != null && !s.isEmpty() && s.length() > 0){
 		    ChildRestrictionView.main(null);
 		}
+	    }
+	});
+	
+	mntmViewTvseries.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent actionEvent) {
+		TVSeriesView.main(null);
 	    }
 	});
     }
