@@ -50,6 +50,7 @@ public class LoginView  extends JPanel{
      */
     private void initialize() {
 	frmLogin = new JFrame();
+	frmLogin.setResizable(false);
 	frmLogin.setTitle("Login");
 	frmLogin.setBounds(100, 100, 291, 137);
 	frmLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

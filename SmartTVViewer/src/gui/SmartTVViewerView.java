@@ -14,6 +14,8 @@ import code.UserManagement;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -99,6 +101,16 @@ public class SmartTVViewerView {
 	
 	JList listChannels = new JList(listModel);
 	scrollPane.setViewportView(listChannels);
+	
+	listChannels.addMouseListener(new MouseAdapter() {
+	    public void mouseClicked(MouseEvent evt) {
+	        JList list = (JList)evt.getSource();
+	        if (evt.getClickCount() == 2) {
+	            int index = list.locationToIndex(evt.getPoint());
+	            
+	        } 
+	    }
+	});
 
 	mntmOrganizeChild.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent actionEvent) {

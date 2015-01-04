@@ -17,6 +17,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.JButton;
 
 import code.UserManagement;
+import java.awt.Window.Type;
 
 public class CreateNewUserView {
 
@@ -52,6 +53,7 @@ public class CreateNewUserView {
      */
     private void initialize() {
 	frmCreateNewUser = new JFrame();
+	frmCreateNewUser.setResizable(false);
 	frmCreateNewUser.setTitle("Create New User");
 	frmCreateNewUser.setBounds(100, 100, 285, 164);
 	frmCreateNewUser.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
