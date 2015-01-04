@@ -1,4 +1,4 @@
-package code;
+package user;
 
 public class UserManagement {
     //public static User user;

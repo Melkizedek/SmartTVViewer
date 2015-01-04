@@ -12,9 +12,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
-
-import code.UserManagement;
 import javax.swing.JPasswordField;
+
+import user.UserManagement;
 
 public class LoginView  extends JPanel{
 

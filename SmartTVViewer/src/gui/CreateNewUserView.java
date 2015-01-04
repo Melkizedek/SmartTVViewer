@@ -16,9 +16,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JButton;
 
-import code.UserManagement;
 import java.awt.Window.Type;
+
 import javax.swing.JPasswordField;
+
+import user.UserManagement;
 
 public class CreateNewUserView {
 
