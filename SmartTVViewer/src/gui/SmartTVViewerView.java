@@ -17,12 +17,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import tv.TVChannel;
+import user.Child;
+import user.ChildManagement;
+import user.Parent;
 import user.UserManagement;
 import util.Initializer;
 
@@ -58,8 +62,8 @@ public class SmartTVViewerView {
      */
     private void initialize() {
 	DefaultListModel<TVChannel> listModel = new DefaultListModel<TVChannel>();
-	
-	for(int i = 0; i < Initializer.tvChannelList.size(); i++){
+
+	for(int i = 0; i < Initializer.tvChannelList.size(); i++) {
 	    listModel.addElement(Initializer.tvChannelList.get(i));
 	}
 
@@ -79,46 +83,61 @@ public class SmartTVViewerView {
 	if(UserManagement.isChild()) {
 	    mntmOrganizeChild.setEnabled(false);
 	}
-	
+
 	JMenuItem mntmViewTvseries = new JMenuItem("View TVSeries");
 	mnMenu.add(mntmViewTvseries);
-	
+
 	JScrollPane scrollPane = new JScrollPane();
 	scrollPane.setPreferredSize(new Dimension(100, 100));
 	frmSTVV.getContentPane().add(scrollPane, BorderLayout.EAST);
-	
+
 	JList<TVChannel> listChannels = new JList<TVChannel>(listModel);
 	listChannels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	scrollPane.setViewportView(listChannels);
-	
+
 	listChannels.addMouseListener(new MouseAdapter() {
 	    public void mouseClicked(MouseEvent evt) {
-	        JList list = (JList)evt.getSource();
-	        if (evt.getClickCount() == 2) {
-	            int index = list.locationToIndex(evt.getPoint());
-	            try {
-			Desktop.getDesktop().open(listModel.elementAt(index).getFile());
+		JList list = (JList) evt.getSource();
+		if(evt.getClickCount() == 2) {
+		    int index = list.locationToIndex(evt.getPoint());
+		    try {
+			Desktop.getDesktop().open(
+				listModel.elementAt(index).getFile());
 		    } catch(IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		    }
-	        } 
+		}
 	    }
 	});
 
 	mntmOrganizeChild.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent actionEvent) {
-		Object[] possibilities = { "ham", "spam", "yam" };
-		String s = (String) JOptionPane.showInputDialog(frmSTVV,
-			"Choose Child to organize:", "Choose Child",
-			JOptionPane.PLAIN_MESSAGE, null, possibilities, possibilities[0]);
-		
-		if(s != null && !s.isEmpty() && s.length() > 0){
-		    ChildRestrictionView.main(null);
+		ArrayList<Child> childrenList = ((Parent) (UserManagement.user))
+			.getChildren();
+
+		if(childrenList.size() > 0) {
+		    Child[] children = new Child[childrenList.size()];
+		    
+		    for(int i = 0; i < childrenList.size(); i++){
+			children[i] = childrenList.get(i);
+		    }
+		    
+		    Child child = (Child) JOptionPane.showInputDialog(frmSTVV,
+			    "Choose Child to organize:", "Choose Child",
+			    JOptionPane.PLAIN_MESSAGE, null, children,
+			    children[0]);
+
+		    if(child != null) {
+			ChildManagement.selectedChild = child;
+			ChildRestrictionView.main(null);
+		    }
+		}else{
+		    JOptionPane.showMessageDialog(frmSTVV, "This Parent has no children attached");
 		}
 	    }
 	});
-	
+
 	mntmViewTvseries.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent actionEvent) {
 		TVSeriesView.main(null);

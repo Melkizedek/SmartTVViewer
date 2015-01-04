@@ -17,9 +17,11 @@ import javax.swing.event.ChangeListener;
 import javax.swing.JButton;
 
 import java.awt.Window.Type;
+import java.util.ArrayList;
 
 import javax.swing.JPasswordField;
 
+import database.DataBase;
 import user.Parent;
 import user.UserManagement;
 
@@ -80,7 +82,11 @@ public class CreateNewUserView {
 	chckbxChildUser.setBounds(10, 66, 103, 23);
 	frmCreateNewUser.getContentPane().add(chckbxChildUser);
 
-	Parent[] parents = {};
+	ArrayList<Parent> parentList = DataBase.getInstance().getParents();
+	Parent[] parents = new Parent[parentList.size()];
+	for(int i = 0; i < parentList.size(); i++){
+	    parents[i] = parentList.get(i);
+	}
 
 	JComboBox<Parent> cbParents = new JComboBox<Parent>(parents);
 	cbParents.setBounds(76, 96, 183, 20);
