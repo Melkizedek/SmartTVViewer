@@ -13,7 +13,7 @@ public class UserManagement {
     }
     
     //String parent --> User parent!!!!!!!!
-    public static boolean createNewUser(String name, String password, boolean child, String parent){
+    public static boolean createNewUser(String name, char[] password, boolean child, String parent){
 	if(name.equals("test")){
 	    return false;
 	}

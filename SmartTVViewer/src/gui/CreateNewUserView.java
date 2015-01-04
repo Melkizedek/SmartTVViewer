@@ -18,12 +18,13 @@ import javax.swing.JButton;
 
 import code.UserManagement;
 import java.awt.Window.Type;
+import javax.swing.JPasswordField;
 
 public class CreateNewUserView {
 
     private JFrame frmCreateNewUser;
     private JTextField tfName;
-    private JTextField tfPassword;
+    private JPasswordField tfPassword;
 
     /**
      * Launch the application.
@@ -72,11 +73,6 @@ public class CreateNewUserView {
 	lblPassword.setBounds(10, 39, 71, 14);
 	frmCreateNewUser.getContentPane().add(lblPassword);
 
-	tfPassword = new JTextField();
-	tfPassword.setColumns(10);
-	tfPassword.setBounds(76, 39, 183, 20);
-	frmCreateNewUser.getContentPane().add(tfPassword);
-
 	JCheckBox chckbxChildUser = new JCheckBox("Child User");
 	chckbxChildUser.setBounds(10, 66, 103, 23);
 	frmCreateNewUser.getContentPane().add(chckbxChildUser);
@@ -93,15 +89,19 @@ public class CreateNewUserView {
 	JButton btnCreateUser = new JButton("Create User");
 	btnCreateUser.setBounds(119, 66, 140, 23);
 	frmCreateNewUser.getContentPane().add(btnCreateUser);
+	
+	tfPassword = new JPasswordField();
+	tfPassword.setBounds(76, 36, 183, 20);
+	frmCreateNewUser.getContentPane().add(tfPassword);
 	lblParent.setVisible(false);
 	
 	btnCreateUser.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent actionEvent) {
-		if(tfName.getText().isEmpty() || tfPassword.getText().isEmpty()){
+		if(tfName.getText().isEmpty() || tfPassword.getPassword().length > 0){
 		    JOptionPane.showMessageDialog(frmCreateNewUser, "Please enter a name and password!");
 		    tfName.grabFocus();
 		}else{
-		    boolean successful = UserManagement.createNewUser(tfName.getText(), tfPassword.getText(), chckbxChildUser.isSelected(), "");
+		    boolean successful = UserManagement.createNewUser(tfName.getText(), tfPassword.getPassword(), chckbxChildUser.isSelected(), "");
 		    
 		    if(successful){
 			frmCreateNewUser.dispose();
