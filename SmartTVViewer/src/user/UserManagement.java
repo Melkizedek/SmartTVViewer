@@ -2,8 +2,6 @@ package user;
 
 import java.util.ArrayList;
 
-import tv.TVChannel;
-import util.Initializer;
 import database.DataBase;
 
 public class UserManagement {

@@ -88,7 +88,10 @@ public class LoginView extends JPanel {
 			    tfPassword.getPassword());
 
 		    if(successful) {
-			if(UserManagement.isChild() && (!((Child)UserManagement.user).isInTimeRestriction() || !((Child)UserManagement.user).isUnderMaxTime())){
+			if(UserManagement.isChild()
+				&& (!((Child) UserManagement.user)
+					.isInTimeRestriction() || !((Child) UserManagement.user)
+					.isUnderMaxTime())) {
 			    SmartTVViewerView.notInTimeRestriction(frmLogin);
 			}
 			frmLogin.dispose();

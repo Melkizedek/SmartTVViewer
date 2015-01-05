@@ -15,8 +15,6 @@ import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -128,7 +126,6 @@ public class SmartTVViewerView {
 	frmSTVV.setVisible(true);
 
 	listChannels.addMouseListener(new MouseAdapter() {
-	    @SuppressWarnings("deprecation")
 	    public void mouseClicked(MouseEvent evt) {
 		@SuppressWarnings("rawtypes")
 		JList list = (JList) evt.getSource();
@@ -148,7 +145,7 @@ public class SmartTVViewerView {
 			    currentChannelPlaying = index;
 			    File path = listModel.elementAt(index).getFile();
 			    player.play(path.getAbsolutePath());
-			    
+
 			    SmartTVViewer.playing = true;
 			    SmartTVViewer.increaseTimeWatched();
 			}

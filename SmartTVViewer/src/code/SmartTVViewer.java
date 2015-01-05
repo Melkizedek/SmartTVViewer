@@ -10,26 +10,26 @@ public class SmartTVViewer {
 
     public static void increaseTimeWatched() {
 	new Thread(new Runnable() {
-	    
 	    @Override
 	    public void run() {
 		for(;;) {
-			if(playing) {
-			    if(!((Child) UserManagement.user).isUnderMaxTime()) {
-				SmartTVViewerView.notInTimeRestriction(null);
-			    }
-			    try {
-				Thread.sleep(2000);
-				((Child) UserManagement.user).incTimeWatched(2000);
-				System.out.println(((Child) UserManagement.user)
-					.getTimeWatched());
-			    } catch(InterruptedException e) {
-				e.printStackTrace();
-			    }
-			}else{
-			    break;
+		    if(playing) {
+			if(!((Child) UserManagement.user).isUnderMaxTime()) {
+			    SmartTVViewerView.notInTimeRestriction(null);
+			}
+			try {
+			    Thread.sleep(2000);
+			    ((Child) UserManagement.user).incTimeWatched(2000);
+			    System.out.println(((Child) UserManagement.user)
+				    .getTimeWatched());
+			} catch(InterruptedException e) {
+			    e.printStackTrace();
 			}
 		    }
+		    else {
+			break;
+		    }
+		}
 	    }
 	}).start();
     }

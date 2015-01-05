@@ -102,8 +102,8 @@ public class Child extends User {
     public long getTimeWatched() {
 	return timeWatched;
     }
-    
-    public void setTimeWatched(long timeWatched){
+
+    public void setTimeWatched(long timeWatched) {
 	this.timeWatched = timeWatched;
     }
 

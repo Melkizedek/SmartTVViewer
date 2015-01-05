@@ -27,7 +27,6 @@ import java.util.Calendar;
 
 import javax.swing.JPanel;
 import javax.swing.JButton;
-import javax.swing.SwingConstants;
 
 public class ChildRestrictionView {
 
@@ -185,7 +184,7 @@ public class ChildRestrictionView {
 	    int minutes = (int) (((ChildManagement.selectedChild.getMaxTime() % 3600000) / 60000));
 
 	    String minutesString = String.valueOf(minutes);
-	    if(minutesString.length() == 1){
+	    if(minutesString.length() == 1) {
 		minutesString = '0' + minutesString;
 	    }
 

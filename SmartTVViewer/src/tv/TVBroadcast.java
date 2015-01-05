@@ -47,7 +47,8 @@ public class TVBroadcast {
 	if(minute.length() < 2)
 	    minute = '0' + minute;
 
-	return "(" + hour + ":" + minute + ") " + series.getName() + " [" + channel.getName() + "]";
+	return "(" + hour + ":" + minute + ") " + series.getName() + " ["
+		+ channel.getName() + "]";
     }
 
 }

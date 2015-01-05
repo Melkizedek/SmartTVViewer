@@ -21,14 +21,10 @@ public class Initializer {
 
     private void initializeTVChannels() {
 	tvChannelList = new ArrayList<TVChannel>();
-	
 
-	TVChannel c1 = new TVChannel("Channel 1", new File(
-		"video/video01.mp4"));
-	TVChannel c2 = new TVChannel("Channel 2", new File(
-		"video/video02.mp4"));
-	TVChannel c3 = new TVChannel("Channel 3", new File(
-		"video/video03.mp4"));
+	TVChannel c1 = new TVChannel("Channel 1", new File("video/video01.mp4"));
+	TVChannel c2 = new TVChannel("Channel 2", new File("video/video02.mp4"));
+	TVChannel c3 = new TVChannel("Channel 3", new File("video/video03.mp4"));
 
 	Calendar cal = Calendar.getInstance();
 	cal.set(2015, 1, 1, 0, 0, 0);
@@ -41,11 +37,11 @@ public class Initializer {
 	cal = Calendar.getInstance();
 	cal.set(2015, 1, 1, 17, 0, 0);
 	c1.addBroadcast(cal, tvSeriesList.get(2));
-	
+
 	cal = Calendar.getInstance();
 	cal.set(2015, 1, 1, 0, 0, 0);
 	c2.addBroadcast(cal, tvSeriesList.get(3));
-	
+
 	cal = Calendar.getInstance();
 	cal.set(2015, 1, 1, 14, 45, 0);
 	c2.addBroadcast(cal, tvSeriesList.get(4));
