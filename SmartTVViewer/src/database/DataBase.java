@@ -8,9 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.List;
 
 import tv.TVChannel;
 import user.*;
@@ -63,6 +62,9 @@ public class DataBase {
 	private static final String SQL_CHANNELRESTRICTION_SELECT = "SELECT channelName FROM ChannelRestriction "
 			+ "WHERE vname = ?";
 
+	private static final String SQL_CHANNELRESTRICTION_DELETE = "DELETE FROM channelRestriction "
+			+ "WHERE vname = ?";
+
 	private static final DataBase instance;
 
 	static {
@@ -90,6 +92,7 @@ public class DataBase {
 	private final PreparedStatement timeRestrictionInsert;
 	private final PreparedStatement channelRestrictionInsert;
 	private final PreparedStatement channelRestrictionSelect;
+	private final PreparedStatement channelRestrictionDelete;
 
 	private DataBase() throws SQLException {
 		Connection c;
@@ -126,6 +129,8 @@ public class DataBase {
 				.prepareStatement(SQL_CHANNELRESTRICTION_INSERT);
 		channelRestrictionSelect = connection
 				.prepareStatement(SQL_CHANNELRESTRICTION_SELECT);
+		channelRestrictionDelete = connection
+				.prepareStatement(SQL_CHANNELRESTRICTION_DELETE);
 	}
 
 	public boolean addParent(Parent parent) {
@@ -263,13 +268,13 @@ public class DataBase {
 
 	public long getMaxTime(Child child) {
 		long maxTime = 0;
-		
+
 		synchronized (viewerSelectMaxTime) {
 			try {
 				viewerSelectMaxTime.setString(1, child.getName());
 				ResultSet result = viewerSelectMaxTime.executeQuery();
 
-				if (result.next()) 
+				if (result.next())
 					maxTime = result.getLong("maxTime");
 			} catch (SQLException e) {
 			} finally {
@@ -350,6 +355,29 @@ public class DataBase {
 		}
 
 		return insertSuccessfull;
+	}
+
+	public void addChannelRestrictions(List<TVChannel> tvChannels, Child child) {
+		deleteChannelRestrictions(child);
+		
+		for(TVChannel tvChannel : tvChannels) {
+			addChannelRestriction(tvChannel, child);
+		}
+	}
+
+	public void deleteChannelRestrictions(Child child) {
+		synchronized (channelRestrictionDelete) {
+			try {
+				channelRestrictionDelete.setString(1, child.getName());
+				channelRestrictionDelete.executeUpdate();
+			} catch (SQLException e) {
+			} finally {
+				try {
+					channelRestrictionDelete.clearParameters();
+				} catch (SQLException e) {
+				}
+			}
+		}
 	}
 
 	public ArrayList<String> getRestrictedChannels(Child child) {

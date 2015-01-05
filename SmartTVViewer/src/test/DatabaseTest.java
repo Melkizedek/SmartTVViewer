@@ -3,6 +3,7 @@ package test;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,6 +18,7 @@ public class DatabaseTest {
 	private DataBase db;
 	private Parent parent, parent2, parent3;
 	private Child child, child2, child3;
+	private TVChannel channel1, channel2, channel3, channel4;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -28,6 +30,11 @@ public class DatabaseTest {
 		child = new Child("Child", "pw", parent);
 		child2 = new Child("Child2", "cool^2", parent3);
 		child3 = new Child("Child3", "adlj", parent2);
+		channel1 = new TVChannel("channel 1", null);
+		channel2 = new TVChannel("channel 2", null);
+		channel3 = new TVChannel("channel 3", null);
+		channel4 = new TVChannel("channel 4", null);
+		
 		
 		InsertTestData();
 	}
@@ -40,10 +47,10 @@ public class DatabaseTest {
 		db.addChild(child2);
 		db.addChild(child3);
 		
-		db.addChannelRestriction(new TVChannel("channel 1", null), child2);
-		db.addChannelRestriction(new TVChannel("channel 2", null), child2);
-		db.addChannelRestriction(new TVChannel("channel 3", null), child2);
-		db.addChannelRestriction(new TVChannel("channel 4", null), child3);
+		db.addChannelRestriction(channel1, child2);
+		db.addChannelRestriction(channel2, child2);
+		db.addChannelRestriction(channel3, child2);
+		db.addChannelRestriction(channel4, child3);
 	}
 
 	@Test
@@ -88,6 +95,35 @@ public class DatabaseTest {
 	public void testRestrictedChannel() {
 		
 		System.out.println("\n Restricted Channels Test");
+		System.out.println("Child: ");
+		for(String channelName : db.getRestrictedChannels(child)) {
+			System.out.println(channelName + " ");
+		}
+		
+		System.out.println("Child2: ");
+		for(String channelName : db.getRestrictedChannels(child2)) {
+			System.out.println(channelName + " ");
+		}
+		
+		System.out.println("Child3: ");
+		for(String channelName : db.getRestrictedChannels(child3)) {
+			System.out.println(channelName + " ");
+		}
+		
+		testMultipleChannelRestrictions();
+	}
+	
+	public void testMultipleChannelRestrictions() {
+		List<TVChannel> tvChannels = new ArrayList<TVChannel>();
+		tvChannels.add(channel3);
+		tvChannels.add(channel4);
+		
+		db.addChannelRestrictions(tvChannels, child);
+		db.addChannelRestrictions(tvChannels, child2);
+		tvChannels.add(channel1);
+		db.addChannelRestrictions(tvChannels, child3);
+		
+		System.out.println("\n Multiple Restricted Channels Test");
 		System.out.println("Child: ");
 		for(String channelName : db.getRestrictedChannels(child)) {
 			System.out.println(channelName + " ");
