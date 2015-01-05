@@ -78,20 +78,10 @@ public class DatabaseTest {
 	
 	@Test
 	public void maxTime() {
-		Calendar calendar = new GregorianCalendar();
-		calendar.set(Calendar.HOUR_OF_DAY, 3);
-		calendar.set(Calendar.MINUTE, 45);
-		
-		db.setMaxTime(child, calendar.getTime());
-		
-		calendar.clear();
-		calendar = db.getMaxTime(child);
-		Assert.assertEquals(3, calendar.get(Calendar.HOUR_OF_DAY));
-		Assert.assertEquals(45, calendar.get(Calendar.MINUTE));
-		
-		calendar.clear();
-		calendar = db.getMaxTime(child2);
-		Assert.assertEquals(null, calendar);
+		long expected = 3500;
+		db.setMaxTime(child, expected);
+		Assert.assertEquals(expected, db.getMaxTime(child));
+		Assert.assertEquals(0, db.getMaxTime(child2));
 	}
 	
 	@Test

@@ -21,7 +21,7 @@ public class DataBase {
 
 	// create statements
 	private static final String SQL_VIEWER_CREATE = "CREATE TABLE Viewer "
-			+ "(vname VARCHAR(100), password VARCHAR(100), maxTime TIMESTAMP, parent VARCHAR(100), "
+			+ "(vname VARCHAR(100), password VARCHAR(100), maxTime BIGINT, parent VARCHAR(100), "
 			+ "PRIMARY KEY(vname), FOREIGN KEY (parent) REFERENCES Viewer(vname))";
 
 	private static final String SQL_TIMERESTRICTION_CREATE = "CREATE TABLE TimeRestriction "
@@ -261,22 +261,16 @@ public class DataBase {
 		return children;
 	}
 
-	public Calendar getMaxTime(Child child) {
-		Calendar c = null;
-
+	public long getMaxTime(Child child) {
+		long maxTime = 0;
+		
 		synchronized (viewerSelectMaxTime) {
 			try {
 				viewerSelectMaxTime.setString(1, child.getName());
 				ResultSet result = viewerSelectMaxTime.executeQuery();
 
-				if (result.next()) {
-					Timestamp maxTime = result.getTimestamp("maxTime");
-
-					if (maxTime != null) {
-						c = new GregorianCalendar();
-						c.setTimeInMillis(maxTime.getTime());
-					}
-				}
+				if (result.next()) 
+					maxTime = result.getLong("maxTime");
 			} catch (SQLException e) {
 			} finally {
 				try {
@@ -286,14 +280,13 @@ public class DataBase {
 			}
 		}
 
-		return c;
+		return maxTime;
 	}
 
-	public void setMaxTime(Child child, Date maxTime) {
+	public void setMaxTime(Child child, long maxTime) {
 		synchronized (SQL_VIEWER_CHILD_INSERT) {
 			try {
-				Timestamp maxTimeTimestamp = new Timestamp(maxTime.getTime());
-				viewerUpdateMaxTime.setTimestamp(1, maxTimeTimestamp);
+				viewerUpdateMaxTime.setLong(1, maxTime);
 				viewerUpdateMaxTime.setString(2, child.getName());
 				int rowsChanged = viewerUpdateMaxTime.executeUpdate();
 				assert rowsChanged == 1;
