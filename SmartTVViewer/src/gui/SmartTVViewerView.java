@@ -15,8 +15,12 @@ import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +33,7 @@ import code.SmartTVViewer;
 
 import com.sun.jna.NativeLibrary;
 
+import database.DataBase;
 import tv.TVChannel;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -88,6 +93,12 @@ public class SmartTVViewerView {
 	frmSTVV.setTitle("SmartTVViewer");
 	frmSTVV.setBounds(100, 100, 650, 450);
 	frmSTVV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frmSTVV.addWindowListener(new WindowAdapter() {
+	    @Override
+	    public void windowClosing(WindowEvent evt) {
+		exitProgram();
+	    }
+	});
 
 	JMenuBar menuBar = new JMenuBar();
 	frmSTVV.setJMenuBar(menuBar);
@@ -117,6 +128,7 @@ public class SmartTVViewerView {
 	frmSTVV.setVisible(true);
 
 	listChannels.addMouseListener(new MouseAdapter() {
+	    @SuppressWarnings("deprecation")
 	    public void mouseClicked(MouseEvent evt) {
 		@SuppressWarnings("rawtypes")
 		JList list = (JList) evt.getSource();
@@ -124,6 +136,7 @@ public class SmartTVViewerView {
 		    int index = list.locationToIndex(evt.getPoint());
 
 		    if(currentChannelPlaying == index) {
+			SmartTVViewer.playing = false;
 			player.stop();
 			currentChannelPlaying = -1;
 		    }
@@ -135,9 +148,14 @@ public class SmartTVViewerView {
 			    currentChannelPlaying = index;
 			    File path = listModel.elementAt(index).getFile();
 			    player.play(path.getAbsolutePath());
-			}else{
-			    JOptionPane.showMessageDialog(frmSTVV,
-				    "You are not allowed to watch this Channel!");
+			    
+			    SmartTVViewer.playing = true;
+			    SmartTVViewer.increaseTimeWatched();
+			}
+			else {
+			    JOptionPane
+				    .showMessageDialog(frmSTVV,
+					    "You are not allowed to watch this Channel!");
 			}
 		    }
 		}
@@ -195,20 +213,27 @@ public class SmartTVViewerView {
 	    e.printStackTrace();
 	}
     }
-    
-    public static void notInTimeRestriction(JFrame frame){
-	if(frame == null){
+
+    public static void notInTimeRestriction(JFrame frame) {
+	if(frame == null) {
 	    frame = smartTVViewerView.frmSTVV;
 	}
-	if(player != null && currentChannelPlaying >= 0){
+	if(player != null && currentChannelPlaying >= 0) {
 	    player.stop();
 	}
-	JOptionPane.showMessageDialog(frame,
-		    "You are no longer in the Time-Restriction-Window!\nProgram will close");
+	JOptionPane
+		.showMessageDialog(frame,
+			"You are no longer in the Time-Restriction-Window!\nProgram will close");
 	exitProgram();
     }
-    
-    public static void exitProgram(){
+
+    public static void exitProgram() {
+	if(((Child) UserManagement.user).getTimeWatched() > 0) {
+	    Calendar today = Calendar.getInstance();
+	    DataBase db = DataBase.getInstance();
+	    db.setActualTimeDay(((Child) UserManagement.user).getTimeWatched(),
+		    today, ((Child) UserManagement.user));
+	}
 	System.exit(0);
     }
 }

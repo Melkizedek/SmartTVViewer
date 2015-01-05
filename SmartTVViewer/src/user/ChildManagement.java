@@ -49,6 +49,14 @@ public class ChildManagement {
 	child.setFromTime(db.getTimeRestrictionBegin(child));
 	child.setToTime(db.getTimeRestrictionEnd(child));
 	
+	Calendar today = Calendar.getInstance();
+	Calendar c = db.getDay(child);
+	if(c != null && c.get(Calendar.DAY_OF_WEEK) == today.get(Calendar.DAY_OF_WEEK)){
+	    child.setTimeWatched(db.getActualTime(child));
+	}else{
+	    child.setTimeWatched(0);
+	}
+	
 	return child;
     }
 }

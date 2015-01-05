@@ -14,7 +14,8 @@ public class Child extends User {
     private Calendar fromTime;
     private Calendar toTime;
     private long maxTime;
-    
+    private long timeWatched;
+
     SimpleDateFormat inputParser = new SimpleDateFormat("HH:mm", Locale.GERMANY);
 
     public Child(String name, String password, Parent parent) {
@@ -22,41 +23,47 @@ public class Child extends User {
 	this.parent = parent;
 	this.maxTime = -1;
     }
-    
-    public boolean isInTimeRestriction(){
+
+    public boolean isInTimeRestriction() {
 	Calendar now = Calendar.getInstance();
 
-        int hour = now.get(Calendar.HOUR_OF_DAY);
-        int minute = now.get(Calendar.MINUTE);
+	int hour = now.get(Calendar.HOUR_OF_DAY);
+	int minute = now.get(Calendar.MINUTE);
 
-        Date date = parseDate(hour + ":" + minute);
-        Date dateCompareOne = parseDate(fromTime.get(Calendar.HOUR_OF_DAY) + ":" + fromTime.get(Calendar.MINUTE));
-        Date dateCompareTwo = parseDate(toTime.get(Calendar.HOUR_OF_DAY) + ":" + toTime.get(Calendar.MINUTE));
+	Date date = parseDate(hour + ":" + minute);
+	Date dateCompareOne = parseDate(fromTime.get(Calendar.HOUR_OF_DAY)
+		+ ":" + fromTime.get(Calendar.MINUTE));
+	Date dateCompareTwo = parseDate(toTime.get(Calendar.HOUR_OF_DAY) + ":"
+		+ toTime.get(Calendar.MINUTE));
 
-        if ( dateCompareOne.before( date ) && dateCompareTwo.after(date)) {
-            return true;
-        }
-	
+	if(dateCompareOne.before(date) && dateCompareTwo.after(date)) {
+	    return true;
+	}
+
 	return false;
     }
 
     private Date parseDate(String date) {
-        try {
-            return inputParser.parse(date);
-        } catch (java.text.ParseException e) {
-            return new Date(0);
-        }
+	try {
+	    return inputParser.parse(date);
+	} catch(java.text.ParseException e) {
+	    return new Date(0);
+	}
     }
-    
-    public static boolean isUnderMaxTime(){
+
+    public boolean isUnderMaxTime() {
+	System.out.println(timeWatched + " -> " + maxTime);
+	if(timeWatched >= maxTime) {
+	    return false;
+	}
 	return true;
     }
-    
-    public void setBannedChannels(ArrayList<TVChannel> channels){
+
+    public void setBannedChannels(ArrayList<TVChannel> channels) {
 	this.bannedChannels = channels;
     }
-    
-    public ArrayList<TVChannel> getBannedChannels(){
+
+    public ArrayList<TVChannel> getBannedChannels() {
 	return this.bannedChannels;
     }
 
@@ -69,27 +76,39 @@ public class Child extends User {
     }
 
     public Calendar getFromTime() {
-        return fromTime;
+	return fromTime;
     }
 
     public void setFromTime(Calendar fromTime) {
-        this.fromTime = fromTime;
+	this.fromTime = fromTime;
     }
 
     public Calendar getToTime() {
-        return toTime;
+	return toTime;
     }
 
     public void setToTime(Calendar toTime) {
-        this.toTime = toTime;
+	this.toTime = toTime;
     }
 
     public long getMaxTime() {
-        return maxTime;
+	return maxTime;
     }
 
     public void setMaxTime(long maxTime) {
-        this.maxTime = maxTime;
+	this.maxTime = maxTime;
+    }
+
+    public long getTimeWatched() {
+	return timeWatched;
+    }
+    
+    public void setTimeWatched(long timeWatched){
+	this.timeWatched = timeWatched;
+    }
+
+    public void incTimeWatched(long time) {
+	this.timeWatched += time;
     }
 
 }

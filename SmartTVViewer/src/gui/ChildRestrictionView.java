@@ -161,23 +161,35 @@ public class ChildRestrictionView {
 	frmChildRestrictions.getContentPane().add(panel_4, BorderLayout.SOUTH);
 
 	if(ChildManagement.selectedChild.getFromTime() != null) {
+	    String minute = String.valueOf(ChildManagement.selectedChild
+		    .getFromTime().get(Calendar.MINUTE));
+	    if(minute.length() == 1) {
+		minute = '0' + minute;
+	    }
+
 	    tfFromTime.setText(String.valueOf(ChildManagement.selectedChild
-		    .getFromTime().get(Calendar.HOUR_OF_DAY))
-		    + ":"
-		    + String.valueOf(ChildManagement.selectedChild
-			    .getFromTime().get(Calendar.MINUTE)));
+		    .getFromTime().get(Calendar.HOUR_OF_DAY)) + ":" + minute);
 	}
 	if(ChildManagement.selectedChild.getFromTime() != null) {
+	    String minute = String.valueOf(ChildManagement.selectedChild
+		    .getToTime().get(Calendar.MINUTE));
+	    if(minute.length() == 1) {
+		minute = '0' + minute;
+	    }
+
 	    tfToTime.setText(String.valueOf(ChildManagement.selectedChild
-		    .getToTime().get(Calendar.HOUR_OF_DAY))
-		    + ":"
-		    + String.valueOf(ChildManagement.selectedChild.getToTime()
-			    .get(Calendar.MINUTE)));
+		    .getToTime().get(Calendar.HOUR_OF_DAY)) + ":" + minute);
 	}
 	if(ChildManagement.selectedChild.getMaxTime() >= 0) {
 	    int hour = (int) ChildManagement.selectedChild.getMaxTime() / 3600000;
 	    int minutes = (int) (((ChildManagement.selectedChild.getMaxTime() % 3600000) / 60000));
-	    tfMaximumTime.setText(hour + ":" + minutes);
+
+	    String minutesString = String.valueOf(minutes);
+	    if(minutesString.length() == 1){
+		minutesString = '0' + minutesString;
+	    }
+
+	    tfMaximumTime.setText(hour + ":" + minutesString);
 
 	}
 
