@@ -7,19 +7,27 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import java.awt.ComponentOrientation;
 
 import tv.TVChannel;
+import user.ChildManagement;
 import util.Initializer;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
 public class ChildRestrictionView {
 
@@ -56,6 +64,8 @@ public class ChildRestrictionView {
      */
     @SuppressWarnings("serial")
     private void initialize() {
+	ArrayList<TVChannel> bannedChannels = ChildManagement.selectedChild
+		.getBannedChannels();
 	DefaultListModel<TVChannel> listModel = new DefaultListModel<TVChannel>();
 
 	for(int i = 0; i < Initializer.tvChannelList.size(); i++) {
@@ -66,7 +76,7 @@ public class ChildRestrictionView {
 	frmChildRestrictions.getContentPane().setComponentOrientation(
 		ComponentOrientation.LEFT_TO_RIGHT);
 	frmChildRestrictions.setTitle("Child Restrictions");
-	frmChildRestrictions.setBounds(100, 100, 342, 371);
+	frmChildRestrictions.setBounds(100, 100, 419, 293);
 	frmChildRestrictions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	frmChildRestrictions.getContentPane().setLayout(new BorderLayout(0, 0));
 
@@ -118,6 +128,7 @@ public class ChildRestrictionView {
 
 	JList<TVChannel> list = new JList<TVChannel>(listModel);
 	list.setPreferredSize(new Dimension(100, 100));
+
 	panel_3.add(list);
 	list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	list.setSelectionModel(new DefaultListSelectionModel() {
@@ -128,6 +139,149 @@ public class ChildRestrictionView {
 		}
 		else {
 		    super.addSelectionInterval(index0, index1);
+		}
+	    }
+	});
+
+	if(bannedChannels != null) {
+	    for(int i = 0; i < bannedChannels.size(); i++) {
+		for(int j = 0; j < listModel.size(); j++) {
+		    if(listModel.get(j).toString()
+			    .equals(bannedChannels.get(i).toString())) {
+			list.getSelectionModel().addSelectionInterval(j, j);
+			break;
+		    }
+		}
+	    }
+	}
+
+	JPanel panel_4 = new JPanel();
+	FlowLayout flowLayout_2 = (FlowLayout) panel_4.getLayout();
+	flowLayout_2.setAlignment(FlowLayout.RIGHT);
+	frmChildRestrictions.getContentPane().add(panel_4, BorderLayout.SOUTH);
+
+	if(ChildManagement.selectedChild.getFromTime() != null) {
+	    tfFromTime.setText(String.valueOf(ChildManagement.selectedChild
+		    .getFromTime().get(Calendar.HOUR_OF_DAY))
+		    + ":"
+		    + String.valueOf(ChildManagement.selectedChild
+			    .getFromTime().get(Calendar.MINUTE)));
+	}
+	if(ChildManagement.selectedChild.getFromTime() != null) {
+	    tfToTime.setText(String.valueOf(ChildManagement.selectedChild
+		    .getToTime().get(Calendar.HOUR_OF_DAY))
+		    + ":"
+		    + String.valueOf(ChildManagement.selectedChild.getToTime()
+			    .get(Calendar.MINUTE)));
+	}
+	if(ChildManagement.selectedChild.getMaxTime() >= 0) {
+	    int hour = (int) ChildManagement.selectedChild.getMaxTime() / 3600000;
+	    int minutes = (int) (((ChildManagement.selectedChild.getMaxTime() % 3600000) / 60000));
+	    tfMaximumTime.setText(hour + ":" + minutes);
+
+	}
+
+	JButton btnSetRestrictions = new JButton("Set Restrictions");
+	panel_4.add(btnSetRestrictions);
+
+	btnSetRestrictions.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent actionEvent) {
+
+		if((!tfFromTime.getText().isEmpty() && tfToTime.getText()
+			.isEmpty())
+			|| (tfFromTime.getText().isEmpty() && !tfToTime
+				.getText().isEmpty())) {
+		    JOptionPane.showMessageDialog(frmChildRestrictions,
+			    "Either From- or To-Time is empty!");
+		}
+		else {
+		    long maxTime = -1;
+		    ArrayList<TVChannel> channels = null;
+		    Calendar fromTime = null;
+		    Calendar toTime = null;
+
+		    if(!tfFromTime.getText().isEmpty()
+			    && !tfToTime.getText().isEmpty()) {
+			try {
+			    String[] splitFromTime = tfFromTime.getText()
+				    .split(":");
+			    String[] splitToTime = tfToTime.getText()
+				    .split(":");
+
+			    if(splitFromTime.length != 2
+				    || splitToTime.length != 2
+				    || splitFromTime[0].length() < 1
+				    || splitFromTime[0].length() > 2
+				    || splitFromTime[1].length() != 2
+				    || splitToTime.length != 2
+				    || splitToTime[0].length() < 1
+				    || splitToTime[0].length() > 2
+				    || splitToTime[1].length() != 2) {
+				JOptionPane
+					.showMessageDialog(
+						frmChildRestrictions,
+						"Invalid Time Input (Must be hh:mm or h:mm)!");
+				return;
+			    }
+
+			    fromTime = Calendar.getInstance();
+			    fromTime.set(Calendar.HOUR_OF_DAY,
+				    Integer.valueOf(splitFromTime[0]));
+			    fromTime.set(Calendar.MINUTE,
+				    Integer.valueOf(splitFromTime[1]));
+
+			    toTime = Calendar.getInstance();
+			    toTime.set(Calendar.HOUR_OF_DAY,
+				    Integer.valueOf(splitToTime[0]));
+			    toTime.set(Calendar.MINUTE,
+				    Integer.valueOf(splitToTime[1]));
+			} catch(Exception e) {
+			    JOptionPane
+				    .showMessageDialog(frmChildRestrictions,
+					    "Invalid Time Input (Must be hh:mm or h:mm)!");
+			    return;
+			}
+		    }
+		    if(!tfMaximumTime.getText().isEmpty()) {
+			try {
+			    String[] splitMaxTime = tfMaximumTime.getText()
+				    .split(":");
+
+			    if(splitMaxTime.length != 2
+				    || splitMaxTime[0].length() < 1
+				    || splitMaxTime[0].length() > 2
+				    || splitMaxTime[1].length() != 2) {
+				JOptionPane
+					.showMessageDialog(
+						frmChildRestrictions,
+						"Invalid Time Input (Must be hh:mm or h:mm)!");
+				return;
+			    }
+
+			    Calendar tmpTime = Calendar.getInstance();
+			    tmpTime.set(Calendar.HOUR_OF_DAY,
+				    Integer.valueOf(splitMaxTime[0]));
+			    tmpTime.set(Calendar.MINUTE,
+				    Integer.valueOf(splitMaxTime[1]));
+
+			    maxTime = 3600000
+				    * tmpTime.get(Calendar.HOUR_OF_DAY) + 60000
+				    * tmpTime.get(Calendar.MINUTE);
+			} catch(Exception e) {
+			    JOptionPane
+				    .showMessageDialog(frmChildRestrictions,
+					    "Invalid Time Input (Must be hh:mm or h:mm)!");
+			    return;
+			}
+		    }
+		    if(!list.isSelectionEmpty()) {
+			channels = (ArrayList<TVChannel>) list
+				.getSelectedValuesList();
+		    }
+
+		    ChildManagement.setRestrictions(fromTime, toTime, maxTime,
+			    channels);
+		    frmChildRestrictions.dispose();
 		}
 	    }
 	});

@@ -61,6 +61,12 @@ public class SmartTVViewerView {
      * Create the application.
      */
     public SmartTVViewerView() {
+	if(UserManagement.isChild()) {
+	    System.out.println(((Child) UserManagement.user)
+		    .getBannedChannels());
+	    System.out.println(((Child) UserManagement.user).getMaxTime());
+	}
+
 	currentChannelPlaying = -1;
 	initialize();
     }
@@ -87,10 +93,10 @@ public class SmartTVViewerView {
 	JMenu mnMenu = new JMenu("Menu");
 	menuBar.add(mnMenu);
 
-	JMenuItem mntmOrganizeChild = new JMenuItem("Organize Child");
-	mnMenu.add(mntmOrganizeChild);
+	JMenuItem mntmManageChild = new JMenuItem("Manage Child");
+	mnMenu.add(mntmManageChild);
 	if(UserManagement.isChild()) {
-	    mntmOrganizeChild.setEnabled(false);
+	    mntmManageChild.setEnabled(false);
 	}
 
 	JMenuItem mntmViewTvseries = new JMenuItem("View TVSeries");
@@ -120,15 +126,23 @@ public class SmartTVViewerView {
 			currentChannelPlaying = -1;
 		    }
 		    else {
-			currentChannelPlaying = index;
-			File path = listModel.elementAt(index).getFile();
-			player.play(path.getAbsolutePath());
+			if(!UserManagement.isChild()
+				|| !((Child) UserManagement.user)
+					.getBannedChannels().contains(
+						listModel.get(index))) {
+			    currentChannelPlaying = index;
+			    File path = listModel.elementAt(index).getFile();
+			    player.play(path.getAbsolutePath());
+			}else{
+			    JOptionPane.showMessageDialog(frmSTVV,
+				    "You are not allowed to watch this Channel!");
+			}
 		    }
 		}
 	    }
 	});
 
-	mntmOrganizeChild.addActionListener(new ActionListener() {
+	mntmManageChild.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent actionEvent) {
 		ArrayList<Child> childrenList = ((Parent) (UserManagement.user))
 			.getChildren();
@@ -146,6 +160,7 @@ public class SmartTVViewerView {
 			    children[0]);
 
 		    if(child != null) {
+			ChildManagement.getRestrictions(child);
 			ChildManagement.selectedChild = child;
 			ChildRestrictionView.main(null);
 		    }

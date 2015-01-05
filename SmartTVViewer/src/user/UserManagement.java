@@ -2,6 +2,8 @@ package user;
 
 import java.util.ArrayList;
 
+import tv.TVChannel;
+import util.Initializer;
 import database.DataBase;
 
 public class UserManagement {
@@ -20,6 +22,8 @@ public class UserManagement {
 		for(int i = 0; i < children.size(); i++) {
 		    ((Parent) user).addChild(children.get(i));
 		}
+	    }else{
+		user = ChildManagement.getRestrictions((Child)user);		
 	    }
 	    return true;
 	}
