@@ -25,6 +25,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import code.SmartTVViewer;
+
 import com.sun.jna.NativeLibrary;
 
 import tv.TVChannel;
@@ -40,7 +42,8 @@ public class SmartTVViewerView {
 
     public static SmartTVViewerView smartTVViewerView;
     private JFrame frmSTVV;
-    private int currentChannelPlaying;
+    private static int currentChannelPlaying;
+    private static MediaPlayerPanel player;
 
     /**
      * Launch the application.
@@ -63,11 +66,7 @@ public class SmartTVViewerView {
      */
     public SmartTVViewerView() {
 	if(UserManagement.isChild()) {
-	    System.out.println(((Child) UserManagement.user)
-		    .getBannedChannels());
-	    System.out.println(((Child) UserManagement.user).getMaxTime());
-	    System.out.println(((Child) UserManagement.user).getFromTime().get(Calendar.HOUR_OF_DAY) + ":" + ((Child) UserManagement.user).getFromTime().get(Calendar.MINUTE));
-	    System.out.println(((Child) UserManagement.user).getToTime().get(Calendar.HOUR_OF_DAY) + ":" + ((Child) UserManagement.user).getToTime().get(Calendar.MINUTE));
+	    SmartTVViewer.startTimeRestrictionCheck();
 	}
 
 	currentChannelPlaying = -1;
@@ -78,7 +77,7 @@ public class SmartTVViewerView {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-	MediaPlayerPanel player = new MediaPlayerPanel();
+	player = new MediaPlayerPanel();
 	DefaultListModel<TVChannel> listModel = new DefaultListModel<TVChannel>();
 
 	for(int i = 0; i < Initializer.tvChannelList.size(); i++) {
@@ -196,7 +195,22 @@ public class SmartTVViewerView {
 	    e.printStackTrace();
 	}
     }
-
+    
+    public static void notInTimeRestriction(JFrame frame){
+	if(frame == null){
+	    frame = smartTVViewerView.frmSTVV;
+	}
+	if(player != null && currentChannelPlaying >= 0){
+	    player.stop();
+	}
+	JOptionPane.showMessageDialog(frame,
+		    "You are no longer in the Time-Restriction-Window!\nProgram will close");
+	exitProgram();
+    }
+    
+    public static void exitProgram(){
+	System.exit(0);
+    }
 }
 
 @SuppressWarnings("serial")

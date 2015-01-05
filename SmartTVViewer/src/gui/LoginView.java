@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 
+import user.Child;
 import user.UserManagement;
 
 @SuppressWarnings("serial")
@@ -87,6 +88,9 @@ public class LoginView extends JPanel {
 			    tfPassword.getPassword());
 
 		    if(successful) {
+			if(UserManagement.isChild() && !((Child)UserManagement.user).isInTimeRestriction()){
+			    SmartTVViewerView.notInTimeRestriction(frmLogin);
+			}
 			frmLogin.dispose();
 			SmartTVViewerView.main(null);
 		    }
