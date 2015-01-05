@@ -146,8 +146,10 @@ public class SmartTVViewerView {
 			    File path = listModel.elementAt(index).getFile();
 			    player.play(path.getAbsolutePath());
 
-			    SmartTVViewer.playing = true;
-			    SmartTVViewer.increaseTimeWatched();
+			    if(UserManagement.isChild()) {
+				SmartTVViewer.playing = true;
+				SmartTVViewer.increaseTimeWatched();
+			    }
 			}
 			else {
 			    JOptionPane
@@ -225,7 +227,7 @@ public class SmartTVViewerView {
     }
 
     public static void exitProgram() {
-	if(((Child) UserManagement.user).getTimeWatched() > 0) {
+	if(UserManagement.isChild() && ((Child) UserManagement.user).getTimeWatched() > 0) {
 	    Calendar today = Calendar.getInstance();
 	    DataBase db = DataBase.getInstance();
 	    db.setActualTimeDay(((Child) UserManagement.user).getTimeWatched(),
