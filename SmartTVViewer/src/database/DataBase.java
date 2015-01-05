@@ -21,7 +21,7 @@ public class DataBase {
 
 	// create statements
 	private static final String SQL_VIEWER_CREATE = "CREATE TABLE Viewer "
-			+ "(vname VARCHAR(100), password VARCHAR(100), maxTime BIGINT, parent VARCHAR(100), "
+			+ "(vname VARCHAR(100), password VARCHAR(100), maxTime BIGINT, actualTime BIGINT, day TIMESTAMP, parent VARCHAR(100), "
 			+ "PRIMARY KEY(vname), FOREIGN KEY (parent) REFERENCES Viewer(vname))";
 
 	private static final String SQL_TIMERESTRICTION_CREATE = "CREATE TABLE TimeRestriction "
@@ -51,8 +51,17 @@ public class DataBase {
 	private static final String SQL_VIEWER_MAXTIME_SELECT = "SELECT maxTime FROM Viewer "
 			+ "WHERE vname = ?";
 
-	private static final String SQL_VIEWER_MAXTIME_UPDATE = "UPDATE Viewer SET maxTime = ? "
+	private static final String SQL_VIEWER_MAXTIME_UPDATE = "UPDATE Viewer SET maxTime = ?, actualTime = 0"
 			+ "WHERE vname = ? AND parent IS NOT NULL";
+
+	private static final String SQL_VIEWER_ACTUALTIME_SELECT = "SELECT actualTime FROM Viewer "
+			+ "WHERE vname = ?";
+
+	private static final String SQL_VIEWER_DAY_SELECT = "SELECT day FROM Viewer "
+			+ "WHERE vname = ?";
+
+	private static final String SQL_VIEWER_ACTUALTIME_DAY_UPDATE = "UPDATE Viewer set actualTime = ?, day = ? "
+			+ "WHERE vname = ?";
 
 	private static final String SQL_TIMERESTRICTION_INSERT = "INSERT INTO TimeRestriction "
 			+ "(vname, beginTime, endTime) VALUES (?, ?, ?)";
@@ -99,6 +108,9 @@ public class DataBase {
 	private final PreparedStatement viewerSelectChildrenOfParent;
 	private final PreparedStatement viewerSelectMaxTime;
 	private final PreparedStatement viewerUpdateMaxTime;
+	private final PreparedStatement viewerSelectActualTime;
+	private final PreparedStatement viewerSelectDay;
+	private final PreparedStatement viewerUpdateActualTimeDay;
 	private final PreparedStatement timeRestrictionInsert;
 	private final PreparedStatement timeRestrictionDelete;
 	private final PreparedStatement timeRestrictionBeginTimeSelect;
@@ -136,6 +148,11 @@ public class DataBase {
 				.prepareStatement(SQL_VIEWER_MAXTIME_SELECT);
 		viewerUpdateMaxTime = connection
 				.prepareStatement(SQL_VIEWER_MAXTIME_UPDATE);
+		viewerSelectActualTime = connection
+				.prepareStatement(SQL_VIEWER_ACTUALTIME_SELECT);
+		viewerSelectDay = connection.prepareStatement(SQL_VIEWER_DAY_SELECT);
+		viewerUpdateActualTimeDay = connection
+				.prepareStatement(SQL_VIEWER_ACTUALTIME_DAY_UPDATE);
 		timeRestrictionInsert = connection
 				.prepareStatement(SQL_TIMERESTRICTION_INSERT);
 		timeRestrictionDelete = connection
@@ -324,10 +341,76 @@ public class DataBase {
 			}
 		}
 	}
+	
+	public long getActualTime(Child child) {
+		long actualTime = 0;
+		
+		synchronized (viewerSelectActualTime) {
+			try {
+				viewerSelectActualTime.setString(1, child.getName());
+				ResultSet result = viewerSelectActualTime.executeQuery();
+
+				if (result.next())
+					actualTime = result.getLong("actualTime");
+			} catch (SQLException e) {
+			} finally {
+				try {
+					viewerSelectActualTime.clearParameters();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		return actualTime;
+	}
+	
+	public Calendar getDay(Child child) {
+		Calendar day = null;
+		
+		synchronized (viewerSelectDay) {
+			try {
+				viewerSelectDay.setString(1, child.getName());
+				ResultSet result = viewerSelectDay.executeQuery();
+
+				if (result.next()) {
+					Timestamp dayTimestamp = result.getTimestamp("day");
+					if(dayTimestamp != null) {
+						day = GregorianCalendar.getInstance();
+						day.setTimeInMillis(dayTimestamp.getTime());
+					}
+				}
+			} catch (SQLException e) {
+			} finally {
+				try {
+					viewerSelectDay.clearParameters();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		return day;
+	}
+	
+	public void setActualTimeDay(long actualTime, Calendar day, Child child) {
+		synchronized (viewerUpdateActualTimeDay) {
+			try {
+				viewerUpdateActualTimeDay.setLong(1, actualTime);
+				viewerUpdateActualTimeDay.setTimestamp(2, new Timestamp(day.getTimeInMillis()));
+				viewerUpdateActualTimeDay.setString(3, child.getName());
+				viewerUpdateActualTimeDay.executeUpdate();
+			} catch (SQLException e) {
+			} finally {
+				try {
+					viewerUpdateActualTimeDay.clearParameters();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
 
 	public boolean addTimeRestriction(Calendar begin, Calendar end, Child child) {
 		deleteTimeRestriction(child);
-		
+
 		boolean insertSuccessfull = false;
 
 		synchronized (timeRestrictionInsert) {
@@ -353,13 +436,13 @@ public class DataBase {
 
 		return insertSuccessfull;
 	}
-	
+
 	public void deleteTimeRestriction(Child child) {
 		synchronized (timeRestrictionDelete) {
 			try {
 				timeRestrictionDelete.setString(1, child.getName());
 				timeRestrictionDelete.executeUpdate();
-			} catch (SQLException e) {		
+			} catch (SQLException e) {
 			} finally {
 				try {
 					timeRestrictionDelete.clearParameters();

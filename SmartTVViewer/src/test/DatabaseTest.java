@@ -35,7 +35,7 @@ public class DatabaseTest {
 		channel3 = new TVChannel("channel 3", null);
 		channel4 = new TVChannel("channel 4", null);
 		
-		InsertTestData();
+		//InsertTestData();
 	}
 
 	public void InsertTestData() {
@@ -83,11 +83,12 @@ public class DatabaseTest {
 	}
 	
 	@Test
-	public void maxTime() {
+	public void testMaxTime() {
 		long expected = 3500;
 		db.setMaxTime(child, expected);
 		Assert.assertEquals(expected, db.getMaxTime(child));
 		Assert.assertEquals(0, db.getMaxTime(child2));
+		Assert.assertEquals(0, db.getActualTime(child));
 	}
 	
 	@Test
@@ -160,8 +161,8 @@ public class DatabaseTest {
 	    Assert.assertEquals(end.get(Calendar.HOUR_OF_DAY), actualEnd.get(Calendar.HOUR_OF_DAY));
 	    Assert.assertEquals(end.get(Calendar.MINUTE), actualEnd.get(Calendar.MINUTE));
 	    
-	    Assert.assertEquals(null, db.getTimeRestrictionBegin(child));
-	    Assert.assertEquals(null, db.getTimeRestrictionEnd(child));
+	    Assert.assertEquals(null, db.getTimeRestrictionBegin(child3));
+	    Assert.assertEquals(null, db.getTimeRestrictionEnd(child3));
 	    
 	    begin.clear();
 		begin.set(Calendar.HOUR_OF_DAY, 17);
@@ -186,7 +187,18 @@ public class DatabaseTest {
 	    Assert.assertEquals(end.get(Calendar.HOUR_OF_DAY), actualEnd.get(Calendar.HOUR_OF_DAY));
 	    Assert.assertEquals(end.get(Calendar.MINUTE), actualEnd.get(Calendar.MINUTE));
 	    
-	   
+	    Assert.assertEquals(null, db.getTimeRestrictionBegin(child3));
+	    Assert.assertEquals(null, db.getTimeRestrictionEnd(child3));
+	}
+	
+	@Test
+	public void testActualTime() {
+		long expected = 1000;
+		Calendar now = Calendar.getInstance();
+		db.setActualTimeDay(expected, now, child3);
+		Assert.assertEquals(expected, db.getActualTime(child3));
+		Assert.assertEquals(now.get(Calendar.DAY_OF_MONTH), db.getDay(child3).get(Calendar.DAY_OF_MONTH));
+		Assert.assertEquals(now.get(Calendar.MONTH), db.getDay(child3).get(Calendar.MONTH));
 	}
 	
 	@Test
