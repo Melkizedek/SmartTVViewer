@@ -19,6 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -65,6 +66,8 @@ public class SmartTVViewerView {
 	    System.out.println(((Child) UserManagement.user)
 		    .getBannedChannels());
 	    System.out.println(((Child) UserManagement.user).getMaxTime());
+	    System.out.println(((Child) UserManagement.user).getFromTime().get(Calendar.HOUR_OF_DAY) + ":" + ((Child) UserManagement.user).getFromTime().get(Calendar.MINUTE));
+	    System.out.println(((Child) UserManagement.user).getToTime().get(Calendar.HOUR_OF_DAY) + ":" + ((Child) UserManagement.user).getToTime().get(Calendar.MINUTE));
 	}
 
 	currentChannelPlaying = -1;

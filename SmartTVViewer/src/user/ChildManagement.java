@@ -15,16 +15,13 @@ public class ChildManagement {
 	
 	if(channels != null){
 	    selectedChild.setBannedChannels(channels);
-
-	    for(int i = 0; i < channels.size(); i++){
-		db.addChannelRestriction(channels.get(i), selectedChild);
-	    }
+	    db.addChannelRestrictions(channels, selectedChild);
 	}
 	if(fromTime != null && toTime != null){
 	    selectedChild.setFromTime(fromTime);
 	    selectedChild.setToTime(toTime);
 	    
-	    db.addTimeRestriction(fromTime.getTime(), toTime.getTime(), selectedChild);
+	    db.addTimeRestriction(fromTime, toTime, selectedChild);
 	}
 	if(maxTime >= 0){
 	    selectedChild.setMaxTime(maxTime);
@@ -47,8 +44,10 @@ public class ChildManagement {
 		}
 	    }
 	}
-	(child).setBannedChannels(channels);
-	(child).setMaxTime(db.getMaxTime(child));
+	child.setBannedChannels(channels);
+	child.setMaxTime(db.getMaxTime(child));
+	child.setFromTime(db.getTimeRestrictionBegin(child));
+	child.setToTime(db.getTimeRestrictionEnd(child));
 	
 	return child;
     }
