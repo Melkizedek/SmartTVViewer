@@ -1,10 +1,8 @@
 package tv;
 
 import java.io.File;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 
 public class TVChannel {
     private String name;
@@ -20,7 +18,7 @@ public class TVChannel {
     }
 
     public void addBroadcast(Calendar time, TVSeries series) {
-	broadcasts.add(new TVBroadcast(time, series));
+	broadcasts.add(new TVBroadcast(time, series, this));
     }
 
     public ArrayList<TVBroadcast> getBroadcasts() {

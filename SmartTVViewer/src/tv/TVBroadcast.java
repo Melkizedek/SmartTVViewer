@@ -1,15 +1,16 @@
 package tv;
 
 import java.util.Calendar;
-import java.util.Formatter;
 
 public class TVBroadcast {
     private Calendar time;
     private TVSeries series;
+    private TVChannel channel;
 
-    public TVBroadcast(Calendar time, TVSeries series) {
+    public TVBroadcast(Calendar time, TVSeries series, TVChannel channel) {
 	this.time = time;
 	this.series = series;
+	this.channel = channel;
     }
 
     public Calendar getTime() {
@@ -28,6 +29,14 @@ public class TVBroadcast {
 	this.series = series;
     }
 
+    public TVChannel getChannel() {
+	return channel;
+    }
+
+    public void setChannel(TVChannel channel) {
+	this.channel = channel;
+    }
+
     @Override
     public String toString() {
 	String hour = String.valueOf(time.get(Calendar.HOUR_OF_DAY));
@@ -38,7 +47,7 @@ public class TVBroadcast {
 	if(minute.length() < 2)
 	    minute = '0' + minute;
 
-	return "(" + hour + ":" + minute + ") " + series.getName();
+	return "(" + hour + ":" + minute + ") " + series.getName() + " [" + channel.getName() + "]";
     }
 
 }

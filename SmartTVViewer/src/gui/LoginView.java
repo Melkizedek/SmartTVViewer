@@ -16,6 +16,7 @@ import javax.swing.JPasswordField;
 
 import user.UserManagement;
 
+@SuppressWarnings("serial")
 public class LoginView extends JPanel {
 
     private JFrame frmLogin;

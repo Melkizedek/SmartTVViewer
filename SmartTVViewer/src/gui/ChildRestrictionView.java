@@ -12,8 +12,6 @@ import javax.swing.ListSelectionModel;
 
 import java.awt.ComponentOrientation;
 
-import javax.swing.JSeparator;
-
 import tv.TVChannel;
 import util.Initializer;
 
@@ -22,7 +20,6 @@ import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
-import javax.swing.BoxLayout;
 
 public class ChildRestrictionView {
 

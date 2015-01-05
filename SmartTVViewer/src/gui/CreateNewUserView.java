@@ -16,7 +16,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JButton;
 
-import java.awt.Window.Type;
 import java.util.ArrayList;
 
 import javax.swing.JPasswordField;

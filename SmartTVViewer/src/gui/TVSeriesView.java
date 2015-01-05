@@ -6,12 +6,11 @@ import java.awt.EventQueue;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import tv.TVBroadcast;
-import tv.TVChannel;
-import tv.TVSeries;
 import util.Initializer;
 
 import java.awt.BorderLayout;
@@ -23,11 +22,12 @@ import javax.swing.JTextField;
 
 import java.awt.FlowLayout;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import java.awt.ComponentOrientation;
 import javax.swing.JButton;
+
+import code.SmartTVViewer;
 
 public class TVSeriesView {
 
@@ -72,11 +72,11 @@ public class TVSeriesView {
 	}
 
 	frame = new JFrame();
-	frame.setBounds(100, 100, 370, 300);
+	frame.setBounds(100, 100, 420, 320);
 	frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 	JScrollPane scrollPane = new JScrollPane();
-	scrollPane.setPreferredSize(new Dimension(150, 500));
+	scrollPane.setPreferredSize(new Dimension(170, 500));
 	frame.getContentPane().add(scrollPane, BorderLayout.WEST);
 
 	JList<TVBroadcast> listChannels = new JList<TVBroadcast>(listModel);
@@ -84,7 +84,7 @@ public class TVSeriesView {
 	scrollPane.setViewportView(listChannels);
 
 	JPanel panel = new JPanel();
-	panel.setPreferredSize(new Dimension(200, 100));
+	panel.setPreferredSize(new Dimension(220, 140));
 	frame.getContentPane().add(panel, BorderLayout.EAST);
 
 	JLabel lblNewLabel = new JLabel("Set Reminder:");
@@ -102,6 +102,29 @@ public class TVSeriesView {
 
 	JButton btnSetReminder = new JButton("Set Reminder");
 	panel.add(btnSetReminder);
+
+	btnSetReminder.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent actionEvent) {
+		if(listChannels.getSelectedValue() != null) {
+		    int reminder = 0;
+		    try {
+			reminder = Integer.valueOf(tfReminder.getText());
+			SmartTVViewer.setReminder(
+				listChannels.getSelectedValue(), reminder);
+		    } catch(Exception e) {
+			JOptionPane.showMessageDialog(frame,
+				"Input is not a valid number!");
+			tfReminder.setText("");
+			tfReminder.grabFocus();
+		    }
+		}
+		else {
+		    JOptionPane.showMessageDialog(frame,
+			    "No Broadcast selected!");
+		}
+
+	    }
+	});
     }
 
 }
