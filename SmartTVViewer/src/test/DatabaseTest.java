@@ -35,7 +35,6 @@ public class DatabaseTest {
 		channel3 = new TVChannel("channel 3", null);
 		channel4 = new TVChannel("channel 4", null);
 		
-		
 		InsertTestData();
 	}
 
@@ -141,7 +140,58 @@ public class DatabaseTest {
 	}
 	
 	@Test
+	public void testTimeRestriction() {
+		Calendar begin = new GregorianCalendar();
+		begin.clear();
+		begin.set(Calendar.HOUR_OF_DAY, 1);
+	    begin.set(Calendar.MINUTE, 30);
+	    
+	    Calendar end = new GregorianCalendar();
+	    end.set(Calendar.HOUR_OF_DAY, 4);
+	    end.set(Calendar.MINUTE, 45);
+	    
+	    db.addTimeRestriction(begin, end, child2);
+	    
+	    Calendar actualBegin = db.getTimeRestrictionBegin(child2);
+	    Calendar actualEnd = db.getTimeRestrictionEnd(child2);
+	    
+	    Assert.assertEquals(begin.get(Calendar.HOUR_OF_DAY), actualBegin.get(Calendar.HOUR_OF_DAY));
+	    Assert.assertEquals(begin.get(Calendar.MINUTE), actualBegin.get(Calendar.MINUTE));
+	    Assert.assertEquals(end.get(Calendar.HOUR_OF_DAY), actualEnd.get(Calendar.HOUR_OF_DAY));
+	    Assert.assertEquals(end.get(Calendar.MINUTE), actualEnd.get(Calendar.MINUTE));
+	    
+	    Assert.assertEquals(null, db.getTimeRestrictionBegin(child));
+	    Assert.assertEquals(null, db.getTimeRestrictionEnd(child));
+	    
+	    begin.clear();
+		begin.set(Calendar.HOUR_OF_DAY, 17);
+	    begin.set(Calendar.MINUTE, 00);
+	    end.set(Calendar.HOUR_OF_DAY, 23);
+	    end.set(Calendar.MINUTE, 55);
+	    
+	    db.addTimeRestriction(begin, end, child);
+	    db.addTimeRestriction(begin, end, child2);
+	    
+	    actualBegin = db.getTimeRestrictionBegin(child);
+	    actualEnd = db.getTimeRestrictionEnd(child);
+	    Assert.assertEquals(begin.get(Calendar.HOUR_OF_DAY), actualBegin.get(Calendar.HOUR_OF_DAY));
+	    Assert.assertEquals(begin.get(Calendar.MINUTE), actualBegin.get(Calendar.MINUTE));
+	    Assert.assertEquals(end.get(Calendar.HOUR_OF_DAY), actualEnd.get(Calendar.HOUR_OF_DAY));
+	    Assert.assertEquals(end.get(Calendar.MINUTE), actualEnd.get(Calendar.MINUTE));
+	    
+	    actualBegin = db.getTimeRestrictionBegin(child2);
+	    actualEnd = db.getTimeRestrictionEnd(child2);
+	    Assert.assertEquals(begin.get(Calendar.HOUR_OF_DAY), actualBegin.get(Calendar.HOUR_OF_DAY));
+	    Assert.assertEquals(begin.get(Calendar.MINUTE), actualBegin.get(Calendar.MINUTE));
+	    Assert.assertEquals(end.get(Calendar.HOUR_OF_DAY), actualEnd.get(Calendar.HOUR_OF_DAY));
+	    Assert.assertEquals(end.get(Calendar.MINUTE), actualEnd.get(Calendar.MINUTE));
+	    
+	   
+	}
+	
+	@Test
 	public void testDate() {
+		System.out.println("\n test with calendar");
 		Calendar calendar = new GregorianCalendar();
 		calendar.set(Calendar.HOUR_OF_DAY, 4);
 		calendar.set(Calendar.MINUTE, 30);

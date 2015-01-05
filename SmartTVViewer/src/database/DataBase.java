@@ -8,7 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import tv.TVChannel;
@@ -56,6 +57,15 @@ public class DataBase {
 	private static final String SQL_TIMERESTRICTION_INSERT = "INSERT INTO TimeRestriction "
 			+ "(vname, beginTime, endTime) VALUES (?, ?, ?)";
 
+	private static final String SQL_TIMERESTRICTION_DELETE = "DELETE FROM TimeRestriction "
+			+ "WHERE vname = ?";
+
+	private static final String SQL_TIMERESTRICTION_BEGIN_SELECT = "SELECT beginTime from TimeRestriction "
+			+ "where vname = ?";
+
+	private static final String SQL_TIMERESTRICTION_END_SELECT = "SELECT endTime from TimeRestriction "
+			+ "where vname = ?";
+
 	private static final String SQL_CHANNELRESTRICTION_INSERT = "INSERT INTO ChannelRestriction "
 			+ "(vname, channelName) VALUES (?, ?)";
 
@@ -90,6 +100,9 @@ public class DataBase {
 	private final PreparedStatement viewerSelectMaxTime;
 	private final PreparedStatement viewerUpdateMaxTime;
 	private final PreparedStatement timeRestrictionInsert;
+	private final PreparedStatement timeRestrictionDelete;
+	private final PreparedStatement timeRestrictionBeginTimeSelect;
+	private final PreparedStatement timeRestrictionEndTimeSelect;
 	private final PreparedStatement channelRestrictionInsert;
 	private final PreparedStatement channelRestrictionSelect;
 	private final PreparedStatement channelRestrictionDelete;
@@ -125,6 +138,12 @@ public class DataBase {
 				.prepareStatement(SQL_VIEWER_MAXTIME_UPDATE);
 		timeRestrictionInsert = connection
 				.prepareStatement(SQL_TIMERESTRICTION_INSERT);
+		timeRestrictionDelete = connection
+				.prepareStatement(SQL_TIMERESTRICTION_DELETE);
+		timeRestrictionBeginTimeSelect = connection
+				.prepareStatement(SQL_TIMERESTRICTION_BEGIN_SELECT);
+		timeRestrictionEndTimeSelect = connection
+				.prepareStatement(SQL_TIMERESTRICTION_END_SELECT);
 		channelRestrictionInsert = connection
 				.prepareStatement(SQL_CHANNELRESTRICTION_INSERT);
 		channelRestrictionSelect = connection
@@ -136,7 +155,7 @@ public class DataBase {
 	public boolean addParent(Parent parent) {
 		boolean insertSuccessfull = false;
 
-		synchronized (SQL_VIEWER_INSERT) {
+		synchronized (viewerInsert) {
 			try {
 				viewerInsert.setString(1, parent.getName());
 				viewerInsert.setString(2, parent.getPassword());
@@ -159,7 +178,7 @@ public class DataBase {
 	public boolean addChild(Child child) {
 		boolean insertSuccessfull = false;
 
-		synchronized (SQL_VIEWER_CHILD_INSERT) {
+		synchronized (viewerInsertChild) {
 			try {
 				viewerInsertChild.setString(1, child.getName());
 				viewerInsertChild.setString(2, child.getPassword());
@@ -289,7 +308,7 @@ public class DataBase {
 	}
 
 	public void setMaxTime(Child child, long maxTime) {
-		synchronized (SQL_VIEWER_CHILD_INSERT) {
+		synchronized (viewerUpdateMaxTime) {
 			try {
 				viewerUpdateMaxTime.setLong(1, maxTime);
 				viewerUpdateMaxTime.setString(2, child.getName());
@@ -306,16 +325,18 @@ public class DataBase {
 		}
 	}
 
-	public boolean addTimeRestriction(Date begin, Date end, Child child) {
+	public boolean addTimeRestriction(Calendar begin, Calendar end, Child child) {
+		deleteTimeRestriction(child);
+		
 		boolean insertSuccessfull = false;
 
-		synchronized (SQL_TIMERESTRICTION_INSERT) {
+		synchronized (timeRestrictionInsert) {
 			try {
 				timeRestrictionInsert.setString(1, child.getName());
 				timeRestrictionInsert.setTimestamp(2,
-						new Timestamp(begin.getTime()));
+						new Timestamp(begin.getTimeInMillis()));
 				timeRestrictionInsert.setTimestamp(3,
-						new Timestamp(end.getTime()));
+						new Timestamp(end.getTimeInMillis()));
 
 				int rowsChanged = timeRestrictionInsert.executeUpdate();
 				if (rowsChanged == 1)
@@ -332,11 +353,81 @@ public class DataBase {
 
 		return insertSuccessfull;
 	}
+	
+	public void deleteTimeRestriction(Child child) {
+		synchronized (timeRestrictionDelete) {
+			try {
+				timeRestrictionDelete.setString(1, child.getName());
+				timeRestrictionDelete.executeUpdate();
+			} catch (SQLException e) {		
+			} finally {
+				try {
+					timeRestrictionDelete.clearParameters();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
+
+	public Calendar getTimeRestrictionBegin(Child child) {
+		Calendar beginTime = null;
+
+		synchronized (timeRestrictionBeginTimeSelect) {
+			try {
+				timeRestrictionBeginTimeSelect.setString(1, child.getName());
+				ResultSet result = timeRestrictionBeginTimeSelect
+						.executeQuery();
+
+				if (result.next()) {
+					Timestamp begin = result.getTimestamp("beginTime");
+					if (begin != null) {
+						beginTime = GregorianCalendar.getInstance();
+						beginTime.setTimeInMillis(begin.getTime());
+					}
+				}
+			} catch (SQLException e) {
+			} finally {
+				try {
+					channelRestrictionSelect.clearParameters();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return beginTime;
+	}
+
+	public Calendar getTimeRestrictionEnd(Child child) {
+		Calendar endTime = null;
+
+		synchronized (timeRestrictionEndTimeSelect) {
+			try {
+				timeRestrictionEndTimeSelect.setString(1, child.getName());
+				ResultSet result = timeRestrictionEndTimeSelect.executeQuery();
+
+				if (result.next()) {
+					Timestamp end = result.getTimestamp("endTime");
+					if (end != null) {
+						endTime = GregorianCalendar.getInstance();
+						endTime.setTimeInMillis(end.getTime());
+					}
+				}
+			} catch (SQLException e) {
+			} finally {
+				try {
+					channelRestrictionSelect.clearParameters();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return endTime;
+	}
 
 	public boolean addChannelRestriction(TVChannel tvChannel, Child child) {
 		boolean insertSuccessfull = false;
 
-		synchronized (SQL_CHANNELRESTRICTION_INSERT) {
+		synchronized (channelRestrictionInsert) {
 			try {
 				channelRestrictionInsert.setString(1, child.getName());
 				channelRestrictionInsert.setString(2, tvChannel.getName());
@@ -359,8 +450,8 @@ public class DataBase {
 
 	public void addChannelRestrictions(List<TVChannel> tvChannels, Child child) {
 		deleteChannelRestrictions(child);
-		
-		for(TVChannel tvChannel : tvChannels) {
+
+		for (TVChannel tvChannel : tvChannels) {
 			addChannelRestriction(tvChannel, child);
 		}
 	}
