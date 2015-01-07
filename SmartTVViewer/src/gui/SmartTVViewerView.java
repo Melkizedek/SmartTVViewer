@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -87,10 +88,13 @@ public class SmartTVViewerView {
 	    listModel.addElement(Initializer.tvChannelList.get(i));
 	}
 
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	
 	frmSTVV = new JFrame();
 	frmSTVV.setTitle("SmartTVViewer");
 	frmSTVV.setBounds(100, 100, 650, 450);
 	frmSTVV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frmSTVV.setLocation(screenSize.width/2 - frmSTVV.getWidth()/2, screenSize.height/2 - frmSTVV.getHeight()/2);
 	frmSTVV.addWindowListener(new WindowAdapter() {
 	    @Override
 	    public void windowClosing(WindowEvent evt) {

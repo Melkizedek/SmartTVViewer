@@ -20,6 +20,7 @@ import util.Initializer;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -71,6 +72,8 @@ public class ChildRestrictionView {
 	    listModel.addElement(Initializer.tvChannelList.get(i));
 	}
 
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	
 	frmChildRestrictions = new JFrame();
 	frmChildRestrictions.getContentPane().setComponentOrientation(
 		ComponentOrientation.LEFT_TO_RIGHT);
@@ -78,6 +81,7 @@ public class ChildRestrictionView {
 	frmChildRestrictions.setBounds(100, 100, 419, 293);
 	frmChildRestrictions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	frmChildRestrictions.getContentPane().setLayout(new BorderLayout(0, 0));
+	frmChildRestrictions.setLocation(screenSize.width/2 - frmChildRestrictions.getWidth()/2, screenSize.height/2 - frmChildRestrictions.getHeight()/2);
 
 	JPanel panel = new JPanel();
 	frmChildRestrictions.getContentPane().add(panel, BorderLayout.NORTH);

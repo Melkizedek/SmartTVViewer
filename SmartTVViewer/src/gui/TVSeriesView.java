@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -21,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import java.awt.FlowLayout;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -71,9 +71,12 @@ public class TVSeriesView {
 	    }
 	}
 
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	
 	frame = new JFrame();
 	frame.setBounds(100, 100, 420, 320);
 	frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	frame.setLocation(screenSize.width/2 - frame.getWidth()/2, screenSize.height/2 - frame.getHeight()/2);
 
 	JScrollPane scrollPane = new JScrollPane();
 	scrollPane.setPreferredSize(new Dimension(170, 500));
