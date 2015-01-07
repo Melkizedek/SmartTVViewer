@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -53,17 +54,20 @@ public class LoginView extends JPanel {
     private void initialize() {
 	frmLogin = new JFrame();
 	frmLogin.setResizable(false);
-	frmLogin.setTitle("Login");
+	frmLogin.setTitle("Manual Login");
 	frmLogin.setBounds(100, 100, 291, 137);
 	frmLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frmLogin.getContentPane().setLayout(null);
+	frmLogin.getContentPane().setBackground(new Color(138, 43, 226));
 
-	JLabel lblName = new JLabel("Name: ");
+	JLabel lblName = new JLabel("E-Mail: ");
 	lblName.setBounds(10, 14, 71, 14);
+	lblName.setForeground(Color.WHITE);
 	frmLogin.getContentPane().add(lblName);
 
 	JLabel lblPassword = new JLabel("Password: ");
 	lblPassword.setBounds(10, 39, 71, 14);
+	lblPassword.setForeground(Color.WHITE);
 	frmLogin.getContentPane().add(lblPassword);
 
 	tfName = new JTextField();

@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,9 +64,11 @@ public class CreateNewUserView {
 	frmCreateNewUser.setBounds(100, 100, 285, 164);
 	frmCreateNewUser.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	frmCreateNewUser.getContentPane().setLayout(null);
+	frmCreateNewUser.getContentPane().setBackground(new Color(138, 43, 226));
 
 	JLabel lblName = new JLabel("Name: ");
 	lblName.setBounds(10, 14, 71, 14);
+	lblName.setForeground(Color.WHITE);
 	frmCreateNewUser.getContentPane().add(lblName);
 
 	tfName = new JTextField();
@@ -75,10 +78,13 @@ public class CreateNewUserView {
 
 	JLabel lblPassword = new JLabel("Password: ");
 	lblPassword.setBounds(10, 39, 71, 14);
+	lblPassword.setForeground(Color.WHITE);
 	frmCreateNewUser.getContentPane().add(lblPassword);
 
 	JCheckBox chckbxChildUser = new JCheckBox("Child User");
 	chckbxChildUser.setBounds(10, 66, 103, 23);
+	chckbxChildUser.setBackground(new Color(138, 43, 226));
+	chckbxChildUser.setForeground(Color.WHITE);
 	frmCreateNewUser.getContentPane().add(chckbxChildUser);
 
 	ArrayList<Parent> parentList = DataBase.getInstance().getParents();
@@ -97,6 +103,7 @@ public class CreateNewUserView {
 
 	JLabel lblParent = new JLabel("Parent: ");
 	lblParent.setBounds(10, 99, 46, 14);
+	lblParent.setForeground(Color.WHITE);
 	frmCreateNewUser.getContentPane().add(lblParent);
 	lblParent.setVisible(false);
 
