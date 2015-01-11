@@ -65,7 +65,7 @@ public class LoginView extends JPanel {
 		frmLogin.getContentPane().setBackground(new Color(85, 26, 139));
 		frmLogin.setLocation(screenSize.width/2 - frmLogin.getWidth()/2, screenSize.height/2 - frmLogin.getHeight()/2);
 
-		JLabel lblName = new JLabel("E-Mail: ");
+		JLabel lblName = new JLabel("Name: ");
 		lblName.setBounds(10, 14, 71, 14);
 		lblName.setForeground(Color.WHITE);
 		frmLogin.getContentPane().add(lblName);
